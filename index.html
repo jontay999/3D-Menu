@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>3D Interactive Menu</title>
-    <link rel="icon" type="image/png" href="./favicon.png" />
+    <link rel="icon" type="image/png" href="./assets/favicon.png" />
     <script
       src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
       integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="
@@ -54,7 +54,7 @@
       }
 
       #background {
-        background-image: url("./table.jpg");
+        background-image: url("./assets/icons/table.jpg");
         background-size: cover;
         height: 100%;
         width: 100%;
@@ -137,52 +137,25 @@
         background-color: rgba(0, 0, 0, 0.2);
         padding: 5px;
         z-index: 30;
-        /* transform: translateY(-50%); */
       }
     </style>
   </head>
   <body>
     <div id="background"></div>
-    <!-- <div class="arrows"> -->
     <img
       class="test-arrow"
       style="right: 0; transform: translateY(-50%)"
       id="right-arrow"
-      src="./right.png"
+      src="./assets/icons/right.png"
     />
     <img
       class="test-arrow"
       id="left-arrow"
       style="transform: rotate(180deg) translateY(50%); left: 0"
-      src="./right.png"
+      src="./assets/icons/right.png"
     />
-    <!-- <div class="arrow" style="right: 0" id="right">
-      <div
-        style="
-          justify-content: end;
-          display: grid;
-          place-content: center;
-          height: 100%;
-        "
-      >
-        <img id="right-arrow" src="./right.png" />
-      </div>
-    </div>
-    <div class="arrow" style="left: 0" id="left">
-      <div
-        style="
-          justify-content: start;
-          display: grid;
-          place-content: center;
-          height: 100%;
-        "
-      >
-        <img style="transform: rotate(180deg)" src="./right.png" />
-      </div>
-    </div> -->
-    <!-- </div> -->
     <div id="header" class="bars">
-      <img src="./Saize Logo.png" class="icon" />
+      <img src="./assets/icons/Saize Logo.png" class="icon" />
     </div>
 
     <div id="wrapper">
@@ -194,23 +167,27 @@
           id="left-end"
           class="bottomArrow"
           style="transform: rotate(180deg)"
-          src="./arrow-end.png"
+          src="./assets/icons/arrow-end.png"
         />
         <img
           id="leftArrow"
           class="bottomArrow"
           style="transform: rotate(180deg); padding: 0 10px"
-          src="./arrow.png"
+          src="./assets/icons/arrow.png"
         />
         <div id="current" style="font-weight: bold; margin-left: 20px">1</div>
         <span style="padding: 0 5px 0 5px">/</span>
         <div id="max" style="margin-right: 20px">22</div>
-        <img class="bottomArrow" id="rightArrow" src="./arrow.png" />
+        <img
+          class="bottomArrow"
+          id="rightArrow"
+          src="./assets/icons/arrow.png"
+        />
         <img
           class="bottomArrow"
           id="right-end"
           style="padding: 0 10px"
-          src="./arrow-end.png"
+          src="./assets/icons/arrow-end.png"
         />
       </div>
     </div>
@@ -233,7 +210,7 @@
       }
 
       function populateImages() {
-        let mainString = "./GRAND_MENU_2021/GRAND_MENU_2021";
+        let mainString = "./assets/GRAND_MENU_2021/GRAND_MENU_2021";
         let innerhtml = "";
         for (let i = 1; i <= totalPages; i++) {
           let src = `${mainString}-${i.toString().padStart(2, "0")}.jpg`;
@@ -257,17 +234,9 @@
       function init() {
         $("#max").text(totalPages);
         let flipbookEL = document.getElementById("flipbook");
-        let audio = new Audio("./pageflip.mp3");
+        let audio = new Audio("./assets/pageflip.mp3");
         window.addEventListener("resize", resize);
         resize();
-
-        // $(".page").on("click", () => {
-        //   // $("#background").toggleClass("zoomed");
-        //   console.log("hi");
-        //   $("#flipbook").turn("zoom") == 1
-        //     ? $("#flipbook").turn("zoom", 1.5, 100)
-        //     : $("#flipbook").turn("zoom", 1, 100);
-        // });
 
         $("#flipbook").turn({
           height: 650,
