@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Interactive Menu</title>
+    <link rel="icon" type="image/png" href="./favicon.png" />
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+      integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      html,
+      body {
+        background-color: black;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        position: relative;
+      }
+
+      #wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: 0.25s;
+        overflow: scroll;
+      }
+
+      .zoomed {
+        transform: scale(2);
+        position: relative;
+        overflow-y: auto;
+      }
+
+      .bars {
+        background-color: black;
+        height: 60px;
+        z-index: 50;
+        width: 100%;
+        position: fixed;
+        padding: 10px;
+        box-sizing: border-box;
+      }
+
+      #bottomBar {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        bottom: 0;
+      }
+
+      #background {
+        background-image: url("./table.jpg");
+        background-size: cover;
+        height: 100%;
+        width: 100%;
+        position: fixed;
+        overflow: auto;
+        z-index: 0;
+      }
+      .icon {
+        height: 100%;
+      }
+
+      .arrow {
+        position: absolute;
+        transition: 0.25s;
+        width: 100px;
+        height: 100%;
+        cursor: pointer;
+        opacity: 0.8;
+        z-index: 20;
+        box-sizing: border-box;
+      }
+
+      .desktop:hover {
+        background: rgba(0, 0, 0, 0.3);
+        opacity: 0.6;
+        cursor: pointer;
+      }
+
+      .arrow img {
+        width: 8vw;
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+
+      .flipbook {
+        height: 100%;
+        transition: margin-left 0.25s ease-out;
+        width: 100%;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        /* margin-top: 63px; */
+      }
+
+      .flipbook .page {
+        height: 100%;
+        width: 100%;
+        background-color: white;
+      }
+
+      .flipbook .page img {
+        max-width: 100%;
+        height: 100%;
+      }
+
+      #pagination {
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .bottomArrow {
+        cursor: pointer;
+        transition: 0.25s;
+      }
+      .bottomArrow:hover {
+        opacity: 0.7;
+      }
+      .arrows {
+        width: 100%;
+        position: fixed;
+        height: 100vh;
+      }
+      .test-arrow {
+        width: 8vw;
+        position: absolute;
+        top: 50%;
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 5px;
+        z-index: 30;
+        /* transform: translateY(-50%); */
+      }
+    </style>
+  </head>
+  <body>
+    <div id="background"></div>
+    <!-- <div class="arrows"> -->
+    <img
+      class="test-arrow"
+      style="right: 0; transform: translateY(-50%)"
+      id="right-arrow"
+      src="./right.png"
+    />
+    <img
+      class="test-arrow"
+      id="left-arrow"
+      style="transform: rotate(180deg) translateY(50%); left: 0"
+      src="./right.png"
+    />
+    <!-- <div class="arrow" style="right: 0" id="right">
+      <div
+        style="
+          justify-content: end;
+          display: grid;
+          place-content: center;
+          height: 100%;
+        "
+      >
+        <img id="right-arrow" src="./right.png" />
+      </div>
+    </div>
+    <div class="arrow" style="left: 0" id="left">
+      <div
+        style="
+          justify-content: start;
+          display: grid;
+          place-content: center;
+          height: 100%;
+        "
+      >
+        <img style="transform: rotate(180deg)" src="./right.png" />
+      </div>
+    </div> -->
+    <!-- </div> -->
+    <div id="header" class="bars">
+      <img src="./Saize Logo.png" class="icon" />
+    </div>
+
+    <div id="wrapper">
+      <div id="flipbook" class="flipbook"></div>
+    </div>
+    <div id="bottomBar" class="bars">
+      <div id="pagination">
+        <img
+          id="left-end"
+          class="bottomArrow"
+          style="transform: rotate(180deg)"
+          src="./arrow-end.png"
+        />
+        <img
+          id="leftArrow"
+          class="bottomArrow"
+          style="transform: rotate(180deg); padding: 0 10px"
+          src="./arrow.png"
+        />
+        <div id="current" style="font-weight: bold; margin-left: 20px">1</div>
+        <span style="padding: 0 5px 0 5px">/</span>
+        <div id="max" style="margin-right: 20px">22</div>
+        <img class="bottomArrow" id="rightArrow" src="./arrow.png" />
+        <img
+          class="bottomArrow"
+          id="right-end"
+          style="padding: 0 10px"
+          src="./arrow-end.png"
+        />
+      </div>
+    </div>
+    <!-- <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+    <script>
+      eruda.init();
+    </script> -->
+    <script src="./turn.js"></script>
+    <script>
+      let totalPages = 16;
+      let isMobile =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        );
+      if (!isMobile) {
+        $("body").css("min-width", "870px");
+        $(".arrow").addClass("desktop");
+        $(".test-arrow").addClass("desktop");
+      } else {
+      }
+
+      function populateImages() {
+        let mainString = "./GRAND_MENU_2021/GRAND_MENU_2021";
+        let innerhtml = "";
+        for (let i = 1; i <= totalPages; i++) {
+          let src = `${mainString}-${i.toString().padStart(2, "0")}.jpg`;
+          innerhtml += `<div class="page">`;
+          innerhtml += `<img src='${src}' draggable='false' alt=''/>`;
+          innerhtml += `</div>`;
+        }
+        $("#flipbook").append(innerhtml);
+      }
+
+      function isSingle() {
+        return $("#flipbook").turn("display") == "single";
+      }
+
+      function resize() {
+        let computedHeight = (document.body.offsetHeight - 650) / 2;
+        $(".bars").css("height", `${computedHeight}px`);
+        $(".flipbook").css("margin-top", `${computedHeight}px`);
+      }
+
+      function init() {
+        $("#max").text(totalPages);
+        let flipbookEL = document.getElementById("flipbook");
+        let audio = new Audio("./pageflip.mp3");
+        window.addEventListener("resize", resize);
+        resize();
+
+        // $(".page").on("click", () => {
+        //   // $("#background").toggleClass("zoomed");
+        //   console.log("hi");
+        //   $("#flipbook").turn("zoom") == 1
+        //     ? $("#flipbook").turn("zoom", 1.5, 100)
+        //     : $("#flipbook").turn("zoom", 1, 100);
+        // });
+
+        $("#flipbook").turn({
+          height: 650,
+          width: isMobile ? 350 : 700,
+          display: isMobile ? "single" : "double",
+          autoCenter: true,
+          gradients: true,
+          elevation: 50,
+          inclination: 10,
+          pages: totalPages,
+          when: {
+            turned: function (e, page) {
+              if (isSingle() || page == 1 || page == totalPages) {
+                $("#current").text(page);
+              } else {
+                $("#current").text(
+                  `${Math.floor(page / 2) * 2}-${Math.floor(page / 2) * 2 + 1}`
+                );
+              }
+            },
+          },
+        });
+
+        $("#flipbook").on("turning", () => {
+          audio.play();
+        });
+
+        let computedHeight = (document.body.offsetHeight - 650) / 2;
+        $(".bars").css("height", `${computedHeight}px`);
+        $("#wr").css("height", `${computedHeight}px`);
+
+        // legit
+        $("#right-arrow").on("click", next);
+        $("#left-arrow").on("click", prev);
+
+        $("#right").on("click", next);
+        $("#rightArrow").on("click", next);
+        $("#left").on("click", prev);
+        $("#leftArrow").on("click", prev);
+        $("#left-end").on("click", () => {
+          $("#flipbook").turn("page", 1);
+        });
+        $("#right-end").on("click", () => {
+          $("#flipbook").turn("page", totalPages);
+        });
+
+        function prev() {
+          if ($("#flipbook").turn("view")[0] != 0) {
+            $("#flipbook").turn("previous");
+          } else {
+            alert("You are on the first page!");
+          }
+        }
+
+        function next() {
+          if (
+            $("#flipbook").turn("view")[0] !=
+            (isSingle() ? totalPages : totalPages - 1)
+          ) {
+            $("#flipbook").turn("next");
+          } else {
+            alert("You are on the last page!");
+          }
+        }
+      }
+      populateImages();
+      init();
+    </script>
+  </body>
+</html>
